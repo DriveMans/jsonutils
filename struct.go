@@ -17,8 +17,8 @@ import (
 	"github.com/polaris1119/logger"
 )
 
-// ParseJsonSliceStruct 解析 json 到 slice struct
-func ParseJsonSliceStruct(body []byte, v interface{}) error {
+// ParseJson2Struct 解析 json 到 struct 或 slice struct
+func ParseJson2Struct(body []byte, v interface{}) error {
 	rv := reflect.ValueOf(v)
 	if rv.Kind() != reflect.Ptr || rv.IsNil() {
 		return &json.InvalidUnmarshalError{Type: reflect.TypeOf(v)}
@@ -33,16 +33,16 @@ func ParseJsonSliceStruct(body []byte, v interface{}) error {
 	if rv.Kind() == reflect.Slice {
 		for i, length := 0, rv.Len(); i < length; i++ {
 			modelVal := rv.Index(i)
-			ParseJsonOneStruct(modelVal, sjson.GetIndex(i))
+			parseJsonOneStruct(modelVal, sjson.GetIndex(i))
 		}
 		return nil
 	} else {
-		return ParseJsonOneStruct(rv, sjson)
+		return parseJsonOneStruct(rv, sjson)
 	}
 }
 
-// ParseJsonOneStruct 解析 json 到 struct
-func ParseJsonOneStruct(rv reflect.Value, sjson *simplejson.Json) error {
+// parseJsonOneStruct 解析 json 到 一个struct
+func parseJsonOneStruct(rv reflect.Value, sjson *simplejson.Json) error {
 	if rv.Kind() != reflect.Struct {
 		return errors.New("v must be pointer of struct")
 	}
