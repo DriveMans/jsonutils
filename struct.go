@@ -11,6 +11,7 @@ import (
 	"errors"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 
 	simplejson "github.com/bitly/go-simplejson"
@@ -57,7 +58,8 @@ func parseJsonOneStruct(rv reflect.Value, sjson *simplejson.Json) error {
 
 		structField := fieldType.Field(i)
 		structTag := structField.Tag
-		name := structTag.Get("json")
+		names := strings.Split(structTag.Get("json"), ",")
+		name := names[0]
 
 		var (
 			tmpJson *simplejson.Json
